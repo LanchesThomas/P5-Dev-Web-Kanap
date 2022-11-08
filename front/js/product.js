@@ -31,7 +31,17 @@ function createProduct() {
             colorsOptions.setAttribute('value', res.colors[i]);
             colorsOptions.innerText = res.colors[i];
         }
-            
-            
+            addToCart();
 });
 }
+
+
+
+function addToCart () {
+document.getElementById('addToCart').addEventListener('click', function(){
+    document.location.href = './cart.html';
+    localStorage.setItem('idProduct', id);
+    localStorage.setItem('quantityProduct', document.getElementById('quantity').value);
+    localStorage.setItem('colorProduct', document.getElementById('colors').value)
+})}
+
