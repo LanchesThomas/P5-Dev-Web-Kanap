@@ -15,16 +15,17 @@ fetch('http://localhost:3000/api/products')
     });
 
 // fonction création des éléments
+
 function createElement() {
-    lien = document.createElement('a');
+    let lien = document.createElement('a');
     document.getElementById('items').appendChild(lien);
-    article = document.createElement('article');
+    let article = document.createElement('article');
     lien.appendChild(article);
-    img = document.createElement('img');
+    let img = document.createElement('img');
     article.appendChild(img);
-    title = document.createElement('h3');
+    let title = document.createElement('h3');
     article.appendChild(title);
-    description = document.createElement('p');
+    let description = document.createElement('p');
     article.appendChild(description);
 }
 
