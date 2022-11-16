@@ -46,6 +46,7 @@ function addElement(item) {
     totalPrice(article);
     totalQuantity(article, item);
     updateQuantity(article, item);
+    deletedElement(article, item);
 }
 
 // création article
@@ -138,15 +139,16 @@ function settings(cartItemContent, item) {
 // modifications prix est quantité total grâce à l'input
 function updateQuantity(article, item) {
     const input = article.querySelector('.itemQuantity');
-    input.addEventListener('input', () => {
+    input.addEventListener('change', () => {
         let itemUpdate = cart.find((element) => element.id === item.id);
         itemUpdate.quantity = Number(input.value);
+        localStorage.setItem('cart', JSON.stringify(cart));
         totalPrice();
         totalQuantity();
     });
 }
 
-// affcihage quantité totale
+// affichage quantité totale
 function totalQuantity() {
     let total = 0;
     let totalQuantity = document.querySelector('#totalQuantity');
@@ -166,4 +168,22 @@ function totalPrice() {
         total += totalUnitPrice;
     });
     totalPrice.textContent = total;
+}
+console.table(cart);
+
+//fonction suppression produit
+function deletedElement(article, item) {
+    const deleted = article.querySelector('.deleteItem');
+    deleted.addEventListener('click', () => {
+        for (i=0; i<cart.length; i++) {
+            console.log(cart[i][1])
+        if (item.id === cart[i].id && item.color === cart[i].color) {
+            cart.splice(i, 1);
+            localStorage.setItem('cart', JSON.stringify(cart));
+            window.location.reload();
+        } 
+    }
+
+        
+    });
 }

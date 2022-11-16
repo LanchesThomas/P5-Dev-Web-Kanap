@@ -80,7 +80,7 @@ function addToCart(res) {
         if (quantity > 0 && quantity <= 100 && color !== '') {
             if (localStorage.getItem('cart') == null) {
                 // si aucun produit n'est dans le panier
-                cart = []; // initialisation liste 'cart'
+                let cart = []; // initialisation liste 'cart'
                 cart.push(cartItem); // ajout des spécifications dans la liste 'cart'
                 localStorage.setItem('cart', JSON.stringify(cart)); // ajout de la liste 'cart' dans le 'local.storage'
                 document.location.href = './cart.html';
