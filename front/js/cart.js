@@ -2,6 +2,8 @@ let cart = JSON.parse(localStorage.getItem('cart'));
 for (i in cart) {
     let item = cart[i];
 
+    // cart[i].id = id;
+
     createArticle(item);
 
     // createElement(id, color, image, quantity);
@@ -15,38 +17,6 @@ for (i in cart) {
         .then(() => {
             addElement(item);
         });
-}
-
-// fonction ajout caractéristiques du produit
-function addElement(item) {
-    // a ajuster pour trouver data-id ET data-color
-    const article = document.querySelector(
-        `[data-color="${item.color}"][data-id="${item.id}"]`
-    );
-    // ajout image
-    let img = article.querySelector('img');
-    img.src = item.img;
-    // ajout du titre
-    article.querySelector('.cart__item__content__description h2').innerText =
-        item.title;
-    // ajout du prix
-    article.querySelector(
-        '.cart__item__content__description'
-    ).lastElementChild.innerText = item.price + ' €';
-
-    // ajout couleur
-    article.querySelector('.cart__item__content__description p').innerText =
-        item.color;
-    // ajout quantité input
-    article.querySelector(
-        '.cart__item__content__settings__quantity input'
-    ).value = item.quantity;
-    // ajout quantité total
-
-    totalPrice(article);
-    totalQuantity(article, item);
-    updateQuantity(article, item);
-    deletedElement(article, item);
 }
 
 // création article
@@ -136,6 +106,38 @@ function settings(cartItemContent, item) {
     cartItemContentSettingsDelete.appendChild(deleteItem);
 }
 
+// fonction ajout caractéristiques du produit
+function addElement(item) {
+    // a ajuster pour trouver data-id ET data-color
+    const article = document.querySelector(
+        `[data-color="${item.color}"][data-id="${item.id}"]`
+    );
+    // ajout image
+    let img = article.querySelector('img');
+    img.src = item.img;
+    // ajout du titre
+    article.querySelector('.cart__item__content__description h2').innerText =
+        item.title;
+    // ajout du prix
+    article.querySelector(
+        '.cart__item__content__description'
+    ).lastElementChild.innerText = item.price + ' €';
+
+    // ajout couleur
+    article.querySelector('.cart__item__content__description p').innerText =
+        item.color;
+    // ajout quantité input
+    article.querySelector(
+        '.cart__item__content__settings__quantity input'
+    ).value = item.quantity;
+    // ajout quantité total
+
+    totalPrice(article);
+    totalQuantity(article, item);
+    updateQuantity(article, item);
+    deletedElement(article, item);
+}
+
 // modifications prix est quantité total grâce à l'input
 function updateQuantity(article, item) {
     const input = article.querySelector('.itemQuantity');
@@ -169,21 +171,19 @@ function totalPrice() {
     });
     totalPrice.textContent = total;
 }
-console.table(cart);
+
 
 //fonction suppression produit
 function deletedElement(article, item) {
     const deleted = article.querySelector('.deleteItem');
     deleted.addEventListener('click', () => {
-        for (i=0; i<cart.length; i++) {
-            console.log(cart[i][1])
-        if (item.id === cart[i].id && item.color === cart[i].color) {
-            cart.splice(i, 1);
-            localStorage.setItem('cart', JSON.stringify(cart));
-            window.location.reload();
-        } 
-    }
-
-        
+        for (i = 0; i < cart.length; i++) {
+            if (item.id === cart[i].id && item.color === cart[i].color) {
+                cart.splice(i, 1);
+                localStorage.setItem('cart', JSON.stringify(cart));
+                window.location.reload();
+            }
+        }
     });
 }
+
