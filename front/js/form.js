@@ -6,8 +6,6 @@ const email = document.querySelector('#email');
 const orderButton = document.querySelector('#order');
 const id = cart[i].id;
 
-// let contactItem = {};
-
 firstName.addEventListener('input', () => {
     let regName = /[a-zA-Z]{1,10}/;
     let firstNameErrorMessage = document.querySelector('#firstNameErrorMsg');
@@ -15,7 +13,6 @@ firstName.addEventListener('input', () => {
         firstNameErrorMessage.textContent = 'Nom Invalide';
     } else {
         firstNameErrorMessage.textContent = '';
-        // contactItem.firstName = firstName.value;
     }
 });
 
@@ -26,7 +23,6 @@ lastName.addEventListener('change', () => {
         lastNameErrorMessage.textContent = 'Prénom Invalide';
     } else {
         lastNameErrorMessage.textContent = '';
-        // contactItem.lastName = lastName.value;
     }
 });
 
@@ -37,7 +33,6 @@ address.addEventListener('change', () => {
         addressErrorMessage.textContent = 'Adresse Invalide';
     } else {
         addressErrorMessage.textContent = '';
-        // contactItem.address = address.value;
     }
 });
 
@@ -48,7 +43,6 @@ city.addEventListener('change', () => {
         cityErrorMessage.textContent = 'Ville Invalide';
     } else {
         cityErrorMessage.textContent = '';
-        // contactItem.city = city.value;
     }
 });
 
@@ -59,7 +53,6 @@ email.addEventListener('change', () => {
         emailErrorMessage.textContent = 'Email Invalide';
     } else {
         emailErrorMessage.textContent = '';
-        // contactItem.email = email.value;
     }
 });
 
