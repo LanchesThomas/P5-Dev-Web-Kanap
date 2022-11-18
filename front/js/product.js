@@ -67,7 +67,6 @@ function addToCart(res) {
         let color = document.getElementById('colors').value;
         let quantity = document.getElementById('quantity').value;
         let img = res.imageUrl;
-        let price = res.price;
         let cartItem = {
             // liste spécifications du produit
             id: id, // id produit
@@ -75,7 +74,6 @@ function addToCart(res) {
             color: color, // couleur produit
             quantity: quantity, // quantité produit
             img : img, // image produit
-            price : price, // prix produit
         };
         if (quantity > 0 && quantity <= 100 && color !== '') {
             if (localStorage.getItem('cart') == null) {

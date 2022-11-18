@@ -14,8 +14,8 @@ for (i in cart) {
                 return res.json();
             }
         })
-        .then(() => {
-            addElement(item);
+        .then((res) => {
+            addElement(item, res);
         });
 }
 
@@ -107,7 +107,7 @@ function settings(cartItemContent, item) {
 }
 
 // fonction ajout caractéristiques du produit
-function addElement(item) {
+function addElement(item, res) {
     // a ajuster pour trouver data-id ET data-color
     const article = document.querySelector(
         `[data-color="${item.color}"][data-id="${item.id}"]`
@@ -119,9 +119,10 @@ function addElement(item) {
     article.querySelector('.cart__item__content__description h2').innerText =
         item.title;
     // ajout du prix
+
     article.querySelector(
         '.cart__item__content__description'
-    ).lastElementChild.innerText = item.price + ' €';
+    ).lastElementChild.innerText = res.price + ' €';
 
     // ajout couleur
     article.querySelector('.cart__item__content__description p').innerText =
@@ -172,7 +173,6 @@ function totalPrice() {
     totalPrice.textContent = total;
 }
 
-
 //fonction suppression produit
 function deletedElement(article, item) {
     const deleted = article.querySelector('.deleteItem');
@@ -215,7 +215,7 @@ lastName.addEventListener('change', () => {
         lastNameErrorMessage.textContent = 'Prénom Invalide';
     } else {
         lastNameErrorMessage.textContent = '';
-    } 
+    }
 });
 
 const addressErrorMessage = document.querySelector('#addressErrorMsg');
@@ -248,32 +248,30 @@ email.addEventListener('change', () => {
     }
 });
 
-
-
 const form = document.querySelector('.cart__order__form');
 
 form.addEventListener('submit', (e) => {
     e.preventDefault();
 
-    if (firstNameErrorMessage.textContent == '' &&
+    if (
+        firstNameErrorMessage.textContent == '' &&
         lastNameErrorMessage.textContent == '' &&
         addressErrorMessage.textContent == '' &&
         cityErrorMessage.textContent == '' &&
-        emailErrorMessage.textContent == ''        
-    ){
+        emailErrorMessage.textContent == ''
+    ) {
         submitForm();
     } else {
-        alert('Veillez a remplir correctement le formulaire')
+        alert('Veillez a remplir correctement le formulaire');
     }
 });
-
 
 function submitForm() {
     if (cart.length === 0) {
         alert('Veuillez sélectionner un produit');
-        document.location.href = `./index.html`
+        document.location.href = `./index.html`;
     }
-    fetch("http://localhost:3000/api/products/order", {
+    fetch('http://localhost:3000/api/products/order', {
         method: 'POST',
         body: JSON.stringify({
             contact: {
