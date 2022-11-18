@@ -2,11 +2,8 @@ let cart = JSON.parse(localStorage.getItem('cart'));
 for (i in cart) {
     let item = cart[i];
 
-    // cart[i].id = id;
-
     createArticle(item);
-
-    // createElement(id, color, image, quantity);
+    submitEvent(item);
 
     fetch(`http://localhost:3000/api/products/${item.id}`)
         .then((res) => {
@@ -16,8 +13,15 @@ for (i in cart) {
         })
         .then((res) => {
             addElement(item, res);
+        })
+        .catch((error) => {
+            console.error(error);
         });
 }
+
+////////////////////////////////////
+///////////ARTCILE ////////////////
+//////////////////////////////////
 
 // création article
 function createArticle(item) {
@@ -67,7 +71,7 @@ function createCartItemContent(article, item) {
     settings(cartItemContent, item);
 }
 
-// création quantité et supprimer produits
+// création paramètres quantité et suppression produits
 function settings(cartItemContent, item) {
     let cartItemContentSettings = document.createElement('div');
     cartItemContentSettings.setAttribute(
@@ -133,20 +137,20 @@ function addElement(item, res) {
     ).value = item.quantity;
     // ajout quantité total
 
-    totalPrice(article);
+    totalPrice(res);
     totalQuantity(article, item);
-    updateQuantity(article, item);
+    updateQuantity(article, item, res);
     deletedElement(article, item);
 }
 
 // modifications prix est quantité total grâce à l'input
-function updateQuantity(article, item) {
+function updateQuantity(article, item, res) {
     const input = article.querySelector('.itemQuantity');
     input.addEventListener('change', () => {
         let itemUpdate = cart.find((element) => element.id === item.id);
         itemUpdate.quantity = Number(input.value);
         localStorage.setItem('cart', JSON.stringify(cart));
-        totalPrice();
+        totalPrice(res);
         totalQuantity();
     });
 }
@@ -163,11 +167,11 @@ function totalQuantity() {
 }
 
 // affichage prix total
-function totalPrice() {
+function totalPrice(res) {
     let total = 0;
     const totalPrice = document.querySelector('#totalPrice');
     cart.forEach((item) => {
-        const totalUnitPrice = item.price * item.quantity;
+        const totalUnitPrice = res.price * item.quantity;
         total += totalUnitPrice;
     });
     totalPrice.textContent = total;
@@ -198,6 +202,7 @@ const city = document.querySelector('#city');
 const email = document.querySelector('#email');
 const orderButton = document.querySelector('#order');
 
+//first name error message validation
 const firstNameErrorMessage = document.querySelector('#firstNameErrorMsg');
 firstName.addEventListener('change', () => {
     let regName = /^[a-z][a-z '-.,]{1,31}$|^$/i;
@@ -208,6 +213,7 @@ firstName.addEventListener('change', () => {
     }
 });
 
+//last name error message validation
 const lastNameErrorMessage = document.querySelector('#lastNameErrorMsg');
 lastName.addEventListener('change', () => {
     let regName = /^[a-z][a-z '-.,]{1,31}$|^$/i;
@@ -218,6 +224,7 @@ lastName.addEventListener('change', () => {
     }
 });
 
+//address error message validation
 const addressErrorMessage = document.querySelector('#addressErrorMsg');
 address.addEventListener('change', () => {
     let regAddress = /[A-Za-z0-9'\.\-\s\,]/;
@@ -228,6 +235,7 @@ address.addEventListener('change', () => {
     }
 });
 
+//city error message validation
 const cityErrorMessage = document.querySelector('#cityErrorMsg');
 city.addEventListener('change', () => {
     let regCity = /[a-zA-Z]{1,10}/;
@@ -238,6 +246,7 @@ city.addEventListener('change', () => {
     }
 });
 
+//email error message validation
 const emailErrorMessage = document.querySelector('#emailErrorMsg');
 email.addEventListener('change', () => {
     let regEmail = /^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$/;
@@ -248,25 +257,29 @@ email.addEventListener('change', () => {
     }
 });
 
-const form = document.querySelector('.cart__order__form');
+// event submit
+function submitEvent(item) {
+    const form = document.querySelector('.cart__order__form');
+    form.addEventListener('submit', (e) => {
+        e.preventDefault();
+        // vérification de la bonne saisie des input
+        if (
+            firstNameErrorMessage.textContent == '' &&
+            lastNameErrorMessage.textContent == '' &&
+            addressErrorMessage.textContent == '' &&
+            cityErrorMessage.textContent == '' &&
+            emailErrorMessage.textContent == ''
+        ) {
+            submitForm(item);
+        } else {
+            // message d'erreur si la saisie n'est pas bonne
+            alert('Veillez a remplir correctement le formulaire');
+        }
+    });
+}
 
-form.addEventListener('submit', (e) => {
-    e.preventDefault();
-
-    if (
-        firstNameErrorMessage.textContent == '' &&
-        lastNameErrorMessage.textContent == '' &&
-        addressErrorMessage.textContent == '' &&
-        cityErrorMessage.textContent == '' &&
-        emailErrorMessage.textContent == ''
-    ) {
-        submitForm();
-    } else {
-        alert('Veillez a remplir correctement le formulaire');
-    }
-});
-
-function submitForm() {
+// fonction envoie des données à l'API pour récupérer l'ID de confirmation
+function submitForm(item) {
     if (cart.length === 0) {
         alert('Veuillez sélectionner un produit');
         document.location.href = `./index.html`;
@@ -281,7 +294,7 @@ function submitForm() {
                 city: city.value,
                 email: email.value,
             },
-            products: [],
+            products: [item.id],
         }),
         headers: {
             'Content-Type': 'application/json; charset=UTF-8',
@@ -291,25 +304,11 @@ function submitForm() {
             return res.json();
         })
         .then((data) => {
-            console.log(data.orderId);
             document.location.href = `./confirmation.html?id=${data.orderId}`;
+            cart = [];
+            localStorage.setItem('cart', JSON.stringify(cart));
         })
         .catch((error) => {
             console.error(error);
         });
-}
-
-function requestBody() {
-    const body = {
-        contact: {
-            firstName: 'pouet',
-            lastName: 'pouet',
-            address: 'pouet',
-            city: 'pouet',
-            email: 'pouet',
-
-            products: ['pouet'],
-        },
-    };
-    return body;
 }

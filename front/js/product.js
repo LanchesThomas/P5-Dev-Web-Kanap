@@ -1,7 +1,11 @@
 // récupération de l'ID de la page URL
-let idUrl = window.location.search;
-let urlParams = new URLSearchParams(idUrl);
-let id = urlParams.get('id');
+let id = getUrlId();
+function getUrlId() {
+    let idUrl = window.location.search;
+    let urlParams = new URLSearchParams(idUrl);
+    let id = urlParams.get('id');
+    return id;
+}
 
 createProduct();
 
@@ -16,14 +20,20 @@ function createProduct() {
         .then((res) => {
             addDisplay(res);
             addToCart(res);
+        })
+        .catch((error) => {
+            console.error(error);
         });
 }
 
+// fonction affichage caractéristiques produit
 function addDisplay(res) {
     // ajout image
     let img = document.createElement('img');
     document.querySelector('.item__img').appendChild(img);
     img.src = res.imageUrl;
+    // ajout altText
+    img.setAttribute('alt', res.altTxt);
     // ajout du titre
     document.getElementById('title').innerText = res.name;
     // ajout du prix
@@ -39,62 +49,42 @@ function addDisplay(res) {
     }
 }
 
-// function addToCart() {
-//     document.getElementById('addToCart').addEventListener('click', function () {
-//         document.location.href = './cart.html';
-
-//         localStorage.setItem('idProduct', id);
-//         localStorage.setItem(
-//             'quantityProduct',
-//             document.getElementById('quantity').value
-//         );
-//         localStorage.setItem(
-//             'colorProduct',
-//             document.getElementById('colors').value
-//         );
-//     });
-// }
-
-
-
+// fonction ajout dans le panier
 function addToCart(res) {
-    // fonction ajout dans le panier
     const btnAddToCart = document.getElementById('addToCart');
     btnAddToCart.addEventListener('click', function () {
-        // écoute de l'événement addToCart
         let cart = JSON.parse(localStorage.getItem('cart'));
         let title = document.getElementById('title').textContent;
         let color = document.getElementById('colors').value;
         let quantity = document.getElementById('quantity').value;
         let img = res.imageUrl;
         let cartItem = {
-            // liste spécifications du produit
-            id: id, // id produit
-            title: title, // nom produit
-            color: color, // couleur produit
-            quantity: quantity, // quantité produit
-            img : img, // image produit
+            id: id, 
+            title: title, 
+            color: color, 
+            quantity: quantity, 
+            img : img,
         };
         if (quantity > 0 && quantity <= 100 && color !== '') {
+            // si aucun produit n'est dans le panier
             if (localStorage.getItem('cart') == null) {
-                // si aucun produit n'est dans le panier
-                let cart = []; // initialisation liste 'cart'
-                cart.push(cartItem); // ajout des spécifications dans la liste 'cart'
-                localStorage.setItem('cart', JSON.stringify(cart)); // ajout de la liste 'cart' dans le 'local.storage'
+                let cart = []; 
+                cart.push(cartItem); 
+                localStorage.setItem('cart', JSON.stringify(cart)); 
                 document.location.href = './cart.html';
             } else {
-                let check = false; // vérifie si la condition est vraie ou fausse
+                let check = false; 
                 for (let i in cart) {
+                    // si la couleur et le titre sont les mêmes on ajoute un a la quantité
                     if (title === cart[i].title && color === cart[i].color) {
-                        // si la couleur et le titre sont les mêmes on ajoute un a la quantité
                         cart[i].quantity =
                             parseInt(cart[i].quantity) + parseInt(quantity);
-                        check = true; // condition vraie
+                        check = true; 
                         break;
                     }
                 }
+                // si la condition est fausse
                 if (check === false) {
-                    // si la condition est fausse
                     cart.push(cartItem);
                 }
                 localStorage.setItem('cart', JSON.stringify(cart));

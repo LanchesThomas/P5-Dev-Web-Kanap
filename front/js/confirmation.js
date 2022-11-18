@@ -1,12 +1,16 @@
-const orderId = document.querySelector('#orderId');
+id = getUrlId();
+displayId();
 
 //récupération de l'ID dans l'URL
-let idUrl = window.location.search;
-let urlParams = new URLSearchParams(idUrl);
-let id = urlParams.get('id');
+function getUrlId() {
+    let idUrl = window.location.search;
+    let urlParams = new URLSearchParams(idUrl);
+    let id = urlParams.get('id');
+    return id;
+}
 
 // affichage du numéro de commande
-orderId.textContent = id;
-
-
-
+function displayId() {
+    const orderId = document.querySelector('#orderId');
+    orderId.textContent = id;
+}
